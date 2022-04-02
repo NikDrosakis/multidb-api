@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge; chrome=1; IE=9; IE=8; IE=7">
+<title>SOC UI</title>
+<link href="https://dev.speedemployer.gr/css/chrome.min.css" rel="stylesheet" type="text/css" />
+<script src="https://dev.speedemployer.gr/js/libs.js"></script>
+<script src="https://dev.speedemployer.gr/js/spd.js"></script>
+<link rel="shortcut icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body>
+<div class="p0">
+<div class="header">
+<header>WEBSOCKET UI</header>
+<select id="type">
+<option value="command">Command</option>
+<option value="notify">notify</option>
+<option value="chat">chat</option>
+<option value="html">html</option>
+</select>
+<input id="rule" placeholder="rule">
+<input id="funct" placeholder="funct">
+<textarea id="text" placeholder="text"></textarea>
+<button id="execute">Execute</button>
+
+</div>
+</div>
+</body>
+
+<script>
+/***********WEBSOCKET*****************/
+const so = new WebSocket('wss://dev.speedemployer.gr:3003');
+so.onopen = function(e) {
+	  warn("success",`WEBSOCKET Connection established`);
+	  console.warn(`WEBSOCKET Connection established`)
+	  var mes={uid:"sudo",type:"open",to:1,cast:"one",text:"SUDO SEND MESSAGE"};	  
+	so.send(mes); //send my from cookie,session,localstorage
+}
+//so.onmessage = function(event) {s.soc.get(event);};
+so.onclose = function(event) {
+  if (event.wasClean) {
+ //   s.notify("info",`Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+  //  s.notify("info",`Connection died`);
+  }
+}
+so.onerror = function(error) {
+ // s.notify("info",`${error.message}`);
+};
+
+$(document).on("click","#execute",()=>{
+	var data={
+		uid:"sudo",
+		type:$('#type').val(),
+		cast:"all",
+		rule:$('#rule').val(),
+		funct:$('#funct').val(),	
+		text:$('#text').val(),
+		time:date('Y'),
+		img:''
+		};
+log(mes)		
+	so.send(JSON.stringify(data));			
+})
+</script>

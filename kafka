@@ -1,0 +1,16 @@
+#!/bin/bash
+echo "kafka shell file running.."
+pkill -f "/usr/local/bin/nodemon start kafka.js"
+PORT1=3003
+PORT2=3004
+PID=$(lsof -i:$PORT1 | awk 'NR==2{print $2}');
+if [ ! -z "$PID" ]; then
+  kill -9 $PID
+  echo "$PID KILLED"
+fi
+PID=$(lsof -i:$PORT2 | awk 'NR==2{print $2}');
+if [ ! -z "$PID" ]; then
+  kill -9 $PID
+  echo "$PID KILLED"
+fi
+nodemon start kafka.js

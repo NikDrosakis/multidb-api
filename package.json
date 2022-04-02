@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "1) express dynamic routing GET, POST, DELETE 2) mysql, mongodb, redis basic functions files 3) mysql data with schema /database/table/where (=1/<1000, etc) 4) databases supported: mysql, redis, mongo 5) AUTHENTICATION primary level (NOT REST) 6) shell exec (use with CURL PHP) php2mongo.sh 7) cron.js running at 3004",
+  "main": "todo/cassandra.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.5.2",
+    "fastify": "^3.22.1",
+    "ip": "^1.1.5",
+    "loglevel": "^1.7.1",
+    "marked-images": "^2.4.0",
+    "web-push": "^3.4.5"
+  }
+}

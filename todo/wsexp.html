@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge; chrome=1; IE=9; IE=8; IE=7">
+<title>SOC UI</title>
+<link href="https://dev.speedemployer.gr/css/chrome.min.css" rel="stylesheet" type="text/css" />
+<script src="https://dev.speedemployer.gr/js/libs.js"></script>
+<link rel="shortcut icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body>
+<script src="https://dev.speedemployer.gr/js/spd.js"></script>
+<script src="https://dev.speedemployer.gr/js/profile.js"></script>
+<script src="https://dev.speedemployer.gr/js/location.js"></script>
+<script src="https://dev.speedemployer.gr/js/init.js"></script>
+<script src="https://dev.speedemployer.gr/js/loan.js"></script>
+<div class="p0">
+<div class="header">
+<a id='homelinka' class="but149" href='/'><span class='officialWeb'>Official Website Name</span><span class='speedTop'><img src='https://dev.speedemployer.gr/img/new/speed.png'></span><span class='employerTop'><img id='speed2' src="https://dev.speedemployer.gr/img/new/speed1.png"/></span></a>
+
+<header>WEBSOCKET UI</header>
+<textarea id="command" placeholder="code"></textarea><textarea id="rule" placeholder="rule"></textarea>
+<button id="execute">Execute</button>
+
+</div>
+</div>
+</body>
+
+<script>
+/***********WEBSOCKET*****************/
+$(document).on("click","#execute",()=>{
+	var mes={uid:"sudo",type:"notify",c:$('#rule').val(),mes:$('#command').val()};	
+	s.sock.send(JSON.stringify(mes));			
+})
+</script>

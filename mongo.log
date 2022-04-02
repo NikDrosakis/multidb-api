@@ -1,0 +1,181 @@
+MongoClient {
+  _events: [Object: null prototype] {},
+  _eventsCount: 0,
+  _maxListeners: undefined,
+  s: {
+    url: 'mongodb://localhost:27017',
+    sessions: Set(0) {},
+    bsonOptions: {
+      raw: false,
+      promoteLongs: true,
+      promoteValues: true,
+      promoteBuffers: false,
+      ignoreUndefined: false,
+      bsonRegExp: false,
+      serializeFunctions: false,
+      fieldsAsRaw: {}
+    },
+    namespace: MongoDBNamespace { db: 'admin', collection: '' },
+    options: [Getter],
+    readConcern: [Getter],
+    writeConcern: [Getter],
+    readPreference: [Getter],
+    logger: [Getter]
+  },
+  topology: Topology {
+    _events: [Object: null prototype] {
+      connectionPoolCreated: [Function (anonymous)],
+      connectionPoolClosed: [Function (anonymous)],
+      connectionCreated: [Function (anonymous)],
+      connectionReady: [Function (anonymous)],
+      connectionClosed: [Function (anonymous)],
+      connectionCheckOutStarted: [Function (anonymous)],
+      connectionCheckOutFailed: [Function (anonymous)],
+      connectionCheckedOut: [Function (anonymous)],
+      connectionCheckedIn: [Function (anonymous)],
+      connectionPoolCleared: [Function (anonymous)],
+      commandStarted: [Function (anonymous)],
+      commandSucceeded: [Function (anonymous)],
+      commandFailed: [Function (anonymous)],
+      serverOpening: [Function (anonymous)],
+      serverClosed: [Function (anonymous)],
+      serverDescriptionChanged: [Function (anonymous)],
+      topologyOpening: [Function (anonymous)],
+      topologyClosed: [Function (anonymous)],
+      topologyDescriptionChanged: [Function (anonymous)],
+      error: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      close: [Function (anonymous)],
+      serverHeartbeatStarted: [Function (anonymous)],
+      serverHeartbeatSucceeded: [Function (anonymous)],
+      serverHeartbeatFailed: [Function (anonymous)]
+    },
+    _eventsCount: 25,
+    _maxListeners: undefined,
+    bson: [Object: null prototype] {
+      serialize: [Function: serialize],
+      deserialize: [Function: deserialize]
+    },
+    s: {
+      id: 0,
+      options: [Object: null prototype],
+      seedlist: [Array],
+      state: 'connected',
+      description: [TopologyDescription],
+      serverSelectionTimeoutMS: 30000,
+      heartbeatFrequencyMS: 10000,
+      minHeartbeatFrequencyMS: 500,
+      servers: [Map],
+      sessionPool: [ServerSessionPool],
+      sessions: Set(0) {},
+      credentials: undefined,
+      clusterTime: undefined,
+      connectionTimers: Set(0) {},
+      detectShardedTopology: [Function: detectShardedTopology],
+      detectSrvRecords: [Function: detectSrvRecords]
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(waitQueue)]: Denque {
+      _head: 2,
+      _tail: 2,
+      _capacity: undefined,
+      _capacityMask: 3,
+      _list: [Array]
+    }
+  },
+  [Symbol(kCapture)]: false,
+  [Symbol(options)]: [Object: null prototype] {
+    hosts: [ [HostAddress] ],
+    compressors: [ 'none' ],
+    connectTimeoutMS: 30000,
+    directConnection: false,
+    metadata: {
+      driver: [Object],
+      os: [Object],
+      platform: 'Node.js v14.17.6, LE (unified)|Node.js v14.17.6, LE (unified)'
+    },
+    forceServerObjectId: false,
+    heartbeatFrequencyMS: 10000,
+    keepAlive: true,
+    keepAliveInitialDelay: 120000,
+    loadBalanced: false,
+    localThresholdMS: 15,
+    logger: Logger { className: 'MongoClient' },
+    maxIdleTimeMS: 0,
+    maxPoolSize: 100,
+    minPoolSize: 0,
+    minHeartbeatFrequencyMS: 500,
+    monitorCommands: false,
+    noDelay: true,
+    pkFactory: { createPk: [Function: createPk] },
+    raw: false,
+    readPreference: ReadPreference {
+      mode: 'primary',
+      tags: undefined,
+      hedge: undefined,
+      maxStalenessSeconds: undefined,
+      minWireVersion: undefined
+    },
+    retryReads: true,
+    retryWrites: true,
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 0,
+    waitQueueTimeoutMS: 0,
+    zlibCompressionLevel: 0,
+    useNewUrlParser: true,
+    dbName: 'test',
+    userSpecifiedAuthSource: false,
+    userSpecifiedReplicaSet: false
+  }
+}
+Καμία επεξεργασία μεταβλητών
+Collection {
+  s: {
+    db: Db { s: [Object] },
+    options: {
+      raw: false,
+      promoteLongs: true,
+      promoteValues: true,
+      promoteBuffers: false,
+      ignoreUndefined: false,
+      bsonRegExp: false,
+      serializeFunctions: false,
+      fieldsAsRaw: {},
+      readPreference: [ReadPreference]
+    },
+    namespace: MongoDBNamespace { db: 'dev1', collection: 'activity' },
+    pkFactory: { createPk: [Function: createPk] },
+    readPreference: ReadPreference {
+      mode: 'primary',
+      tags: undefined,
+      hedge: undefined,
+      maxStalenessSeconds: undefined,
+      minWireVersion: undefined
+    },
+    bsonOptions: {
+      raw: false,
+      promoteLongs: true,
+      promoteValues: true,
+      promoteBuffers: false,
+      ignoreUndefined: false,
+      bsonRegExp: false,
+      serializeFunctions: false,
+      fieldsAsRaw: {}
+    },
+    readConcern: undefined,
+    writeConcern: undefined,
+    slaveOk: false
+  }
+}
+1
+MongoRuntimeError: Connection pool closed
+    at ConnectionPool.close (/var/www/node_modules/mongodb/lib/cmap/connection_pool.js:211:46)
+    at Server.destroy (/var/www/node_modules/mongodb/lib/sdam/server.js:116:21)
+    at destroyServer (/var/www/node_modules/mongodb/lib/sdam/topology.js:513:12)
+    at /var/www/node_modules/mongodb/lib/sdam/topology.js:269:88
+    at Object.eachAsync (/var/www/node_modules/mongodb/lib/utils.js:614:9)
+    at /var/www/node_modules/mongodb/lib/sdam/topology.js:269:25
+    at ServerSessionPool.endAllPooledSessions (/var/www/node_modules/mongodb/lib/sessions.js:568:13)
+    at /var/www/node_modules/mongodb/lib/sdam/topology.js:268:32
+    at Object.eachAsync (/var/www/node_modules/mongodb/lib/utils.js:617:9)
+    at Topology.close (/var/www/node_modules/mongodb/lib/sdam/topology.js:267:17)

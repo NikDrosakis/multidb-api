@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "SUDO shell file running.."
+pkill -f "/usr/local/bin/nodemon start SUDO.js"
+PORT=3004
+PID=$(lsof -i:$PORT | awk 'NR==2{print $2}');
+if [ ! -z "$PID" ]; then
+  kill -9 $PID
+  echo "$PID KILLED"
+fi
+nodemon start SUDO.js

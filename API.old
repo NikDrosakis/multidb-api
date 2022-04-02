@@ -1,0 +1,179 @@
+/*NODEJS API v0.1
+- includes SERVER g (gaia.js) public reads s.api (spd.gr) to methods
+- ???? needs to access some of my data (old identity data) 
+- chat get from cookiechat
+ SUPPORTS
+ A) GET MONGO,MYSQL,REDIS
+ B) POST MONGO,MYSQL,REDIS
+ [D) REDIS PUBSUB R CHANNEL (PHP INSE(), QUERY() FUNCTIONS TO MYSQL sent as JQL)]
+ [E) REDIS PUBSUB N CHANNEL  (COUNTERS DOTTED STRINGS converted to JQL)]
+ GET DATA FROM JSONS AND MYSQLS
+ UPDATED req.query.[var] gets all query string variables, so
+ we keep global schema /mongo/:first [database]/:sec [collection] / third is auth token
+  mο is for mongo
+  ma is for mysql
+  red is for redis
+  e is for (shell) exec
+  c is for cassandra  
+     //   if (err.toString().indexOf("EADDRINUSE")!== -1){
+     //     shell.exec("/bin/bash /var/www/api/nodemon.sh 3005");
+     //     }
+     log(err);
+	 # privateKey = fs.readFileSync( '/usr/share/ca-certificates/mycerts/speedemployer.gr.key', 'utf8'),
+# certificate = fs.readFileSync( '/usr/share/ca-certificates/mycerts/speedemployer.gr.pem', 'utf8'),
+* */
+var cluster = require('cluster');
+if (cluster.isMaster) {
+    // Count the machine's CPUs
+    var cpuCount = require('os').cpus().length;
+    // Create a worker for each CPU
+	console.log(cpuCount)
+    for (var i = 0; i < cpuCount; i += 1) {
+        cluster.fork();
+    }
+}else{
+
+const g = require('./gaia'), {promisify} = require("util"),{ exec } = require("child_process"),https = require('https'),path = require('path'),fs = require("fs"),express = require('express'),app = express(),compression = require('compression'),bodyParser = require("body-parser"),
+redis = require("redis"),red = redis.createClient({host:'0.0.0.0', port:6379, password: "yjF1f7uiHttcp",detect_buffers: true,db:2 });
+cookieParser = require('cookie-parser');app.use(express.static("public"))
+app.use(compression());app.use(cookieParser());app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+//app.use(bodyParser.urlencoded({extended: false}));
+console.log('RUNNING EXPRESS NODEJS API 2 at %d Worker %d running!', g.port,cluster.worker.id);
+//start server
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/dev.speedemployer.gr/privkey.pem', 'utf8'),certificate = fs.readFileSync( '/etc/letsencrypt/live/dev.speedemployer.gr/fullchain.pem', 'utf8'),credentials = {key: privateKey, cert: certificate};
+const api=https.createServer(credentials, app);
+api.listen(g.port, function(){
+    g.l('listening on *:'+g.port);
+}).on('error', function(err) { 
+exec('/var/www/spd4/api/api')
+});
+
+//A GET METHODS	
+app.get('/:type/:col', async (req, res) => {
+	//auth(req,res);
+	res.header('Access-Control-Allow-Methods', 'GET,POST,PUT');
+    res.header('Transfer-Encoding', 'chunked');
+    res.header('Access-Control-Allow-Origin', req.get('origin'));
+    res.header("Access-Control-Allow-Credentials", true);
+    var bin=(req.cookies['session-id']+req.cookies['sp']).toString()
+    var authorization= new Buffer.from(bin).toString('base64');
+    res.header("Authorization","Basic "+authorization);    
+	var type = req.params.type || '';    
+    var col = req.params.col || '';
+	console.log("GET API 2 "+type+col)
+	console.log(req.url);
+// MONGO GET API get cols getOne
+    switch(type){
+	case 'mo':	
+        req.params.q=req.query;		
+		var action=req.params.q.a;
+        var mon = require('./'+g.dbs[type])(req.params);		
+        mon[action](function (data) {
+            data=Number.isInteger(data) ? data.toString():data;
+			res.status(200).send(data);res.end()				
+        });
+	break;
+// MARIA GET API
+    case "ma": 		
+		if(col=="count"){
+			req.params.q=req.query
+			var mon = require('./mods/count')(req.params);
+			mon[col](function (data) {
+				data=data[0];
+			   res.status(200).send(data);res.end()				   
+			});	
+		}else{	
+		req.params.q=req.query.q;
+		var mon = require('./'+g.dbs[type])(req.params);
+		mon[col](function (data) {
+			if(col=="getOne"){data=data[0]}
+		   res.status(200).send(data);res.end()				   
+		});		
+		}
+	break;
+	case "red":
+// REDIS GET API col=redis key  get lrange keys     
+		if(req.query.action=="lrange"){
+			red.lrange(col,  0, -1, function(err, data) {
+			 res.status(200).send(data);
+			 res.end()
+			})
+		}else{ //get / keys with col*
+			red[req.query.action](col, function(err, data) {
+			data=data!=null ? data : 'NO';
+			res.status(200).send(data);res.end()
+			});	
+		}
+	break;
+    case "compo":
+		req.params=JSON.parse(req.query.q);		
+		var swig  = require('swig');	
+		var db = require('./'+g.dbs[req.params.type])(req.params);		
+		db[req.params.col](function (data) {
+			if(req.params.col=="getOne"){data=data[0]}
+			var template = swig.compileFile('compo/'+col+'.html');
+			var compohtml = template(data);
+				res.status(200).send({data:data,html:compohtml});
+				res.end()				
+        });		
+	break;
+	}	
+});
+//B  POST METHODS
+app.post('/:type/:col', async (req, res) => {
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header('Content-Type','application/x-www-form-urlencoded');
+	res.header('Access-Control-Allow-Methods', 'GET,POST');
+    res.header('Access-Control-Allow-Origin', req.get('origin'));
+    res.header("Access-Control-Allow-Credentials", true);
+	var bin=(req.cookies['session-id']+req.cookies['sp']).toString()
+    var authorization= new Buffer.from(bin).toString('base64');
+    res.header("Authorization","Basic "+authorization);
+    var type = req.params.type || '';
+    var col = req.params.col || '';	
+	console.log("RUNNING POST API 2 "+type+col)	
+// MONGO POST API ins insMany del set upsert delMany upMany fup 
+  switch(type){
+  case "mo":
+		req.params.q=JSON.parse(JSON.stringify(req.body));					
+        var mon = require('./'+g.dbs[type])(req.params);
+        mon[req.params.q.a](function (data) {
+			res.status(200).send(data);
+			res.end()			
+        });
+	break;
+//MARIA POST API
+    case 'ma':	
+		req.params.q=req.body.q;		
+		var mon = require('./'+g.dbs[type])(req.params);		
+        mon[col](function (data) {			
+		   res.status(200).send(data);res.end()
+        });
+	break;	
+// REDIS POST API set string & Object METHODS: set rpush del 
+	case "red":
+			if(req.body.action=="del"){
+			red.del(col, function(err, data){		
+				res.sendStatus(200);res.end()
+			});	
+			}else{
+			red[req.body.action](col,req.body.val, function(err, data) {			
+				res.sendStatus(200);
+				res.end()
+			});
+			}
+	break;		
+    case 'sh':
+        //shell prm 1 2 3 4
+        if(col!='') {
+            exec('/bin/bash /var/www/spd4/api/'+db+'.sh '+col+' '+params.prm1+' ' + params.prm2+' ' + params.prm3+' ' + params.prm4, function(code, stdout, stderr) {
+                res.status(200).send(stdout.toString()); 	
+				res.end()
+            });
+        }
+	break;	
+    }
+});
+
+}

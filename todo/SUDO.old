@@ -1,0 +1,110 @@
+//connect to mongodb to get rules 
+//no G,my,dic 
+
+//start server 
+//const server = https.createServer({
+    //cert: fs.readFileSync('/etc/letsencrypt/live/dev.speedemployer.gr/fullchain.pem', 'utf8'),
+    //key: fs.readFileSync('/etc/letsencrypt/live/dev.speedemployer.gr/privkey.pem', 'utf8')
+//}).listen("3003").on('error', function(err) { 
+//exec('/var/www/spd4/api/websocket')});
+
+//START SOCKET 
+//const socket = new WebSocket.Server({server: server});
+//all connected to the server users 
+//HIGH LEVEL administration 
+/*
+set communication with API 
+save list 
+*/
+/*
+socket.on("connection", (client) => {
+  // console.log(con);	 
+   //when server gets a message from a connected user 
+   client.on("message", (message) => {   
+  // console.log(message.toString())
+		var data = JSON.parse(message.toString());		
+		 //list client connections
+		if(data.type=="open"){
+			if(data.uid!=undefined && data.uid!=null && data.uid!=''){
+			red.sadd('wse',data.uid);				
+			//clients[data.uid]=client;
+			save(parseInt(data.uid),JSON.stringify(client))
+			}else{console.log(data.uid)}				
+		}
+		//SENT HTML 
+		if(data.uname=='eoi'){
+		const chat = require('./compo/chat')(data);
+		}		
+		
+		//const chat = require('./compo/chat')(data);
+	//	const chat = fs.readFileSync('compo/chat.html', 'utf8')
+//		client.send(JSON.stringify({type:"html",html:chat}))
+		//send to peer
+		if(data.type=="chat" && data.to!='undefined'){
+			clients[data.touid].send(JSON.stringify(data));	  
+		}else{
+			//client.send(JSON.stringify("not accepted form"));
+		}	
+		//send to all 		  
+		//con.clients.forEach(function each(client) {
+		//if (client.readyState === WebSocket.OPEN) {
+		//client.send(message, { binary: isBinary });		
+		 red.sinter('wse',(err,d)=>{
+			//console.log(d)	
+				for(var i in d){
+				//	console.log(d[i])
+					uid=parseInt(d[i])
+				//	clients[i].send(JSON.stringify({uid:d[i],c:"message to all",type:'broadcast'}));
+				moget(uid).then(res=>{console.log(res);res.send(JSON.stringify({uid:uid,c:"BROADCASTING message to all",type:'notify'}))}).catch(err => { console.log(err) });
+				}
+		 })	
+	});	
+//when user exits, for example closes a browser window 
+//this may help if we are still in "offer","answer" or "candidate" state 
+   socket.on("close", function() { 	
+		console.log("connection closed")
+   }); 
+  	  
+})
+*/
+
+const red = createClient({host:'0.0.0.0', port:6379, password: "yjF1f7uiHttcp",clientTracking: true,db:2 });
+import {createClient} from "redis";
+import {MongoClient} from 'mongodb';
+
+//save to mongo 
+const url="mongodb://nikosd:UpvMy@0.0.0.0:27017/spd6?authMechanism=SCRAM-SHA-1&authSource=admin";
+const moget=async function (uid) {
+    let client;		
+    try {	
+	client = await MongoClient.connect(url);
+        const db = client.db(); 
+	var response = await db.collection("test").findOne({uid:uid});	
+	   client.close();
+        return response.con;
+	 } catch (err) {
+        (client) && client.close();
+        console.log(err);
+        throw err
+    }
+}
+const save= async function (uid,con) {
+    let client;		
+    try {	
+	client=await MongoClient.connect(url);
+        const db = client.db(); 		
+	var response = await db.collection("test").insertOne({uid:uid,con:con});		
+	   client.close();
+        return response;
+	 } catch (err) {
+        (client) && client.close();
+        console.log(err);
+        throw err
+    }
+}
+		
+		//case bidirectional 
+	//	var mes=data.toString();
+//		console.log(mes)
+	//	red.sadd('wse',mes.uid);
+	
