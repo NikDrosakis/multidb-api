@@ -1,2 +1,0 @@
-<?php
-$data=$_POST;
