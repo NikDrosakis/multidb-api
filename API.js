@@ -10,7 +10,7 @@ if (cluster.isMaster) {
     }
 }else{
 const g = require('./gaia'), {promisify} = require("util"),{ exec } = require("child_process"),https = require('https'),path = require('path'),fs = require("fs"),express = require('express'),app = express(),compression = require('compression'),bodyParser = require("body-parser"),
-redis = require("redis"),red = redis.createClient({host:'0.0.0.0', port:6379, password: "n130177!",detect_buffers: true,db:2 });
+redis = require("redis"),red = redis.createClient({host:'127.0.0.1', port:6379, password: g.REDISPASS,detect_buffers: true,db:2 });
 cookieParser = require('cookie-parser');app.use(express.static("public"))
 app.use(compression());
 app.use(cookieParser());
