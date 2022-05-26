@@ -31,9 +31,9 @@ module.exports = function(params){
 	console.log(prm)
 const pool = mariadb.createPool({
 	host: 'localhost',
-	user: 'nikosd',
-	password: "UpvMy",
-	database: "spd6",
+	user: g.USER,
+	password: g.PASS,
+	database: g.DB,
 	waitForConnections: true,		
 	connectionLimit: 1,
 	queueLimit: 0,
